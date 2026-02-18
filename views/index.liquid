@@ -1,10 +1,19 @@
 {% render 'partials/head.liquid', title: 'Squad page' %}
 
-<h2>Students</h2>
-<ul>
-  {% for person in persons %}
-    <li><a href="/student/{{ person.id }}">{{ person.name }}</a></li>
+<details>
+  <summary>Sorteer</summary>
+  {% for squad in squads %}
+    <a href="/squad/{{ squad.name }}">{{ squad.name }} oud naar jong</a>
+    <a href="/squad/{{ squad.name }}/young">{{ squad.name }} jong naar oud</a>
   {% endfor %}
-</ul>
+</details>
 
-{% render 'partials/foot.liquid', squads: squads %}
+<h1>Studenten</h1>
+
+{% for person in persons %}
+  <article>
+    <h2>{{ person.name }}</h2>
+    <p>Birthdate: {{ person.birthdate }}</p>
+  </article>
+{% endfor %}
+{% render 'partials/foot.liquid', title: 'Squad page' %}

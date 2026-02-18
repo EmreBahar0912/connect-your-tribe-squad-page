@@ -80,11 +80,69 @@ app.get('/', async function (request, response) {
   response.render('index.liquid', {persons: personResponseJSON.data, squads: squadResponseJSON.data})
 })
 
+// beide squads sorteren op verjaardag van oud naar jong
+app.get('/squad/:squadName', async function (request, response) {
+
+  const params = {
+    'sort': 'birthdate',
+    'fields': '*,squads.*',
+    'filter[squads][squad_id][name]': request.params.squadName,
+    'filter[squads][squad_id][cohort]': '2526',
+    'filter[squads][squad_id][tribe][name]': 'FDND Jaar 1'
+  }
+
+  const apiURL = 'https://fdnd.directus.app/items/person?' + new URLSearchParams(params)
+  // console.log(apiURL)
+
+  const personResponse = await fetch(apiURL)
+  const personResponseJSON = await personResponse.json()
+  // console.log(personResponseJSON.data)
+
+  response.render('index.liquid', {persons: personResponseJSON.data, squads: squadResponseJSON.data})
+})
+
+app.get('/squad/:squadName/young', async function (request, response) {
+
+  const params = {
+    'sort': '-birthdate',
+    'fields': '*,squads.*',
+    'filter[squads][squad_id][name]': request.params.squadName,
+    'filter[squads][squad_id][cohort]': '2526',
+    'filter[squads][squad_id][tribe][name]': 'FDND Jaar 1'
+  }
+
+  const apiURL = 'https://fdnd.directus.app/items/person?' + new URLSearchParams(params)
+  console.log(apiURL)
+
+  const personResponse = await fetch(apiURL)
+  const personResponseJSON = await personResponse.json()
+  console.log(personResponseJSON.data)
+
+  response.render('index.liquid', {persons: personResponseJSON.data, squads: squadResponseJSON.data})
+})
+
 // Maak een POST route voor de index; hiermee kun je bijvoorbeeld formulieren afvangen
 app.post('/', async function (request, response) {
   // Je zou hier data kunnen opslaan, of veranderen, of wat je maar wilt
   // Er is nog geen afhandeling van POST, redirect naar GET op /
   response.redirect(303, '/')
+})
+
+// lege array voor de berichten
+let messagesArray = []
+
+// get request op /berichten
+app.get('/berichten', async function (request, response) {
+  response.render('messages.liquid', {
+    messages: messagesArray
+  })
+})
+
+// post request, ook op /berichten
+app.post('/berichten', async function (request, response) {
+  // Voeg de inhoud van het tekstveld toe aan de array
+  messagesArray.push(request.body.message)
+  response.redirect(303, '/berichten')
 })
 
 
