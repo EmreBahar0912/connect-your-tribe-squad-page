@@ -121,6 +121,24 @@ app.get('/squad/:squadName/young', async function (request, response) {
   response.render('index.liquid', {persons: personResponseJSON.data, squads: squadResponseJSON.data})
 })
 
+app.get('/25-or-older', async function (request, response) {
+
+  const params = {
+    'filter[birthdate][_lte]': '2001-01-01',
+    'filter[squads][squad_id][cohort]': '2526',
+    'filter[squads][squad_id][tribe][name]': 'FDND Jaar 1'
+  }
+
+  const apiURL = 'https://fdnd.directus.app/items/person?' + new URLSearchParams(params)
+  // console.log(apiURL)
+
+  const personResponse = await fetch(apiURL)
+  const personResponseJSON = await personResponse.json()
+  // console.log(personResponseJSON.data)
+
+  response.render('index.liquid', {persons: personResponseJSON.data, squads: squadResponseJSON.data})
+})
+
 // Maak een POST route voor de index; hiermee kun je bijvoorbeeld formulieren afvangen
 app.post('/', async function (request, response) {
   // Je zou hier data kunnen opslaan, of veranderen, of wat je maar wilt

@@ -6,6 +6,7 @@
     <a href="/squad/{{ squad.name }}">{{ squad.name }} oud naar jong</a>
     <a href="/squad/{{ squad.name }}/young">{{ squad.name }} jong naar oud</a>
   {% endfor %}
+    <a href="/25-or-older">25 of ouder</a>
 </details>
 
 <h1>Studenten</h1>
@@ -16,4 +17,3 @@
     <p>Birthdate: {{ person.birthdate }}</p>
   </article>
 {% endfor %}
-{% render 'partials/foot.liquid', title: 'Squad page' %}
