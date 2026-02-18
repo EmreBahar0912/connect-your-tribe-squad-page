@@ -128,22 +128,22 @@ app.post('/', async function (request, response) {
   response.redirect(303, '/')
 })
 
-// lege array voor de berichten
-let messagesArray = []
+// // lege array voor de berichten
+// let messagesArray = []
 
-// get request op /berichten
-app.get('/berichten', async function (request, response) {
-  response.render('messages.liquid', {
-    messages: messagesArray
-  })
-})
+// // get request op /berichten
+// app.get('/berichten', async function (request, response) {
+//   response.render('messages.liquid', {
+//     messages: messagesArray
+//   })
+// })
 
-// post request, ook op /berichten
-app.post('/berichten', async function (request, response) {
-  // Voeg de inhoud van het tekstveld toe aan de array
-  messagesArray.push(request.body.message)
-  response.redirect(303, '/berichten')
-})
+// // post request, ook op /berichten
+// app.post('/berichten', async function (request, response) {
+//   // Voeg de inhoud van het tekstveld toe aan de array
+//   messagesArray.push(request.body.message)
+//   response.redirect(303, '/berichten')
+// })
 
 // OEFENING 3
 // In plaats van een simpele array aanmaken in onze server, lezen we dan messages uit Directus
@@ -166,6 +166,37 @@ const messagesResponseJSON = await messagesResponse.json()
 response.render('messages.liquid', {
   messages: messagesResponseJSON.data
 })
+})
+
+// BEWAREN IN DIRECTUS
+app.post('/berichten', async function (request, response) {
+
+  // Stuur een POST request naar de messages database
+  // Een POST request bevat ook extra parameters, naast een URL
+  await fetch('https://fdnd.directus.app/items/messages', {
+
+    // overschrijf de standaard GET method
+    method: 'POST',
+
+    // geef de body mee als JSON string
+    body: JSON.stringify({
+      // Dit is zodat we ons bericht straks weer terug kunnen vinden met ons filter
+      for: 'demo-16-februari',
+      // En dit is ons eerdere formulierveld
+      text: request.body.message
+    }),
+
+    // En vergeet deze HTTP headers niet: hiermee vertellen we de server dat we JSON doorsturen
+    // (In realistischere projecten zou je hier ook authentication headers of een sleutel meegeven)
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    }
+  
+  })
+
+  // zonder redirect wordt in de browser niets geplaats, alleen in directus
+  response.redirect('/berichten')
+
 })
 
 
